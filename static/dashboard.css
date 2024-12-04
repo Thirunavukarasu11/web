@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 40px);
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 17px;
+}
+
+.logo {
+    height: 80px;
+    display: block;
+    margin: 0 auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 8px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    padding: 8px;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+}
+
+.content {
+    flex-grow: 1;
+    background-color: #f7f7f7;
+    padding: 50px;
+    border-radius: 20px;
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th:nth-child(1),
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4),
+th:nth-child(5) {
+    background-color: black;
+    color: white;
+}
+
+.button-container {
+    display: flex; 
+    gap: 8px; 
+}
+
+button {
+    background-color: #000000; 
+    color: white; 
+    border: none; 
+    padding: 8px 12px; 
+    font-size: 12px; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background-color 0.3s; 
+}
+
+button:hover {
+    background-color: #22a90a; 
+}
+
+button.reject:hover {
+    background-color: #ff4d4d; 
+}
+
+

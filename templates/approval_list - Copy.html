@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Approval List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Approved Emails</h1>
+    {% if approved_emails %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subject</th>
+                    <th>Recipient Email</th>
+                    <th>Content</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for email in approved_emails %}
+                <tr>
+                    <td>{{ email['id'] }}</td>
+                    <td>{{ email['subject'] }}</td>
+                    <td>{{ email['recipient_email'] }}</td>
+                    <td>{{ email['content'] }}</td>
+                    <td>{{ email['status'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No approved emails found.</p>
+    {% endif %}
+</body>
+</html>

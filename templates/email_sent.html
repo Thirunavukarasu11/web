@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sent Emails</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 80%;
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+        }
+
+        td {
+            color: #555;
+            text-align: center;
+        }
+
+        td:first-child {
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+
+            table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Email Sent Log</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Recipient Email</th>
+                    <th>Sent On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if sent_emails %}
+                    {% for email in sent_emails %}
+                        <tr>
+                            <td>{{ email[0] }}</td>
+                            <td>{{ email[1] }}</td> <!-- Email address -->
+                            <td>{{ email[2] }}</td> <!-- Date Sent -->
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">No emails sent yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

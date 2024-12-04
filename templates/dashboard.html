@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="../static/dashboard.js" defer></script> 
+    <style>
+        /* Basic styles for modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Badge style */
+.badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+
+        /* Center the template designs section */
+        #templateContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px; /* Add space at the top */
+        }
+
+        table {
+            width: 80%; /* Set table width */
+            border-collapse: collapse;
+            margin-top: 20px; /* Space above the table */
+        }
+
+        th, td {
+            border: 1px solid #ddd; /* Add border to table cells */
+            padding: 8px; /* Add padding inside cells */
+            text-align: center; /* Center text */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Header background color */
+        }
+    </style>
+    <script>
+        function approve(cve_number, description, severity) {
+            // Create email content with the provided template
+            const emailContent = `
+                <div id="main">
+                    <div id="cveImg">
+                        <a href="https://necurity.com/">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1722044636/logo_sfukpe.png" alt="cve" width="250px" height="125px">
+                        </a>
+                    </div>
+                    <h1>NEW CVE UPDATES</h1>
+                    <div id="emailBody">
+                        <h2 class="cve-title">${description}</h2>
+                        <div class="cve-description">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CVE NUMBER</th>
+                                        <th>SEVERITY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${cve_number}</td>
+                                        <td>${severity}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>Description for ${cve_number} goes here.</p>
+                            <p><strong>Published Date:</strong> Add date here.</p>
+                        </div>
+                    </div>
+                    <div class="bottombar">
+                        <a href="http://necurity.com" target="_blank">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713760/web_topw8s.png" alt="web" width="25px" height="25px">
+                        </a>
+                        <a href="tel:+91-8610 14 0034">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/call_lnfado.png" alt="phone" width="25px" height="25px">
+                        </a>
+                        <a href="mailto:hr@necurity.com">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/email_fw6iet.png" alt="mail" width="25px" height="25px">
+                        </a>
+                        <a href="https://in.linkedin.com/company/necuritysoln" target="_blank">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721714745/linkedin_uykiul.png" alt="linkedin" width="25px" height="25px">
+                        </a>
+                        <a href="https://www.instagram.com/necuritysoln/" target="_blank">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721715815/instagram_yevn6t.png" alt="instagram" width="25px" height="25px">
+                        </a>
+                    </div>
+                    <div id="copyright">
+                        Copyright @2024 Necurity | All Rights Reserved
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-email-preview').innerHTML = emailContent;
+            document.getElementById('modal-cve-number').value = cve_number;
+            document.getElementById('approval-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('approval-modal').style.display = 'none'; // Close the modal
+        }
+
+        function sendEmail() {
+const recipientEmail = document.getElementById('recipient_email').value;
+const cveNumber = document.getElementById('modal-cve-number').value;
+const emailContent = document.getElementById('modal-email-preview').innerHTML;
+
+fetch('/send_email', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        email: recipientEmail,
+        cve_number: cveNumber,
+        content: emailContent,
+    }),
+})
+.then(response => {
+    if (response.ok) {
+        alert('Email sent successfully!');
+    } else {
+        response.json().then(data => {
+            alert('Error: ' + data.error);
+        });
+    }
+})
+.catch(error => alert('Error: ' + error.message));
+}
+
+        function showTemplates() {
+            // Redirect to the templates page using the Flask route
+            window.location.href = "/email"; // Make sure this matches your Flask route
+        }
+
+        function showDashboard() {
+            // Show the dashboard overview
+            document.getElementById('dashboard-overview').style.display = 'block';
+
+            // Hide the templates table
+            document.getElementById('templateContainer').innerHTML = '';
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo" class="logo">
+        </div>
+    
+        <ul>
+            <!-- Home link -->
+            <li><a href="#" onclick="showDashboard()" aria-label="Go to Dashboard">Home</a></li>
+            <!-- Approval List link with dynamic badge -->
+            <li>
+                <a href="{{ url_for('approval_list') }}" aria-label="Go to Approval List">
+                    Approval List
+                    {% if pending_count > 0 %}
+                        <span class="badge">{{ pending_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+
+
+<script>
+    function rejectCVE(cve_number) {
+        fetch('/reject_cve', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cve_number: cve_number })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                // Optionally, refresh or update the UI after rejection
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+    }
+</script>
+
+    
+            <!-- Rejected List link with dynamic badge -->
+            <li>
+                <a href="{{ url_for('rejected_list') }}" aria-label="Go to Rejected List">
+                    Rejected List
+                    {% if rejected_count > 0 %}
+                        <span class="badge">{{ rejected_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <!-- Email Sent link -->
+            <li><a href="{{ url_for('email_sent') }}" aria-label="View Sent Emails">Email Sent</a></li>
+            <li><a href="/user-management" aria-label="Go to User Management">Group set</a></li
+            <!-- Logout link -->
+            <li><a href="{{ url_for('logout') }}" aria-label="Log out of your account">Logout</a></li>
+
+        
+            
+        
+        </ul>
+    </div>
+    
+    </div>
+
+    <div id="templateContainer"></div> <!-- Container for the templates table -->   
+
+    
+    <!-- Dashboard Overview Section -->
+    <div class="content" id="dashboard-overview" style="display: block;">
+        <h1>Dashboard Overview</h1>
+        <h2>Latest CVE Entries</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>CVE Number</th>
+                    <th>Description</th>
+                    <th>Link</th>
+                    <th>Severity</th>   
+                    <th>Status</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>CVE-2024-4811</td>
+                    <td>In affected versions of Octopus Server under certain conditions, a user with specific role assignments can access restricted project artifacts.</td>
+                    <td><a href="https://thehackernews.com/">Link</a></td>
+                    <td>2.2/10</td>
+                    <td>
+                        <button onclick="approve('CVE-2024-4811', 'Octopus Server Improper Access Control', '2.2/10')">Approve</button>
+                        <button onclick="rejectCVE(this)">Reject</button>
+                    </td>
+                </tr>
+                
+                        <!-- Loop through CVE entries and display them in the table -->
+        {% for entry in cve_entries %}
+        <tr>
+            <td>{{ entry.cve_number }}</td>
+            <td>{{ entry.description }}</td>
+            <td><a href="{{ entry.link }}">Link</a></td>
+            <td>{{ entry.severity }}</td>
+            <td>
+                <form action="{{ url_for('reject_cve', cve_id=entry.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+                <tr>
+                    <td>CVE-2024-7057</td>
+                    <td>An information disclosure vulnerability in GitLab CE/EE affecting all versions starting from 16.0.0.</td>
+                    <td><a href="https://thehackernews.com/">Link</a></td>
+                    <td>5.5/10</td>
+                    <td>
+                        <button onclick="approve('CVE-2024-7057', 'GitLab CE/EE Information Disclosure', '5.5/10')">Approve</button>
+                        <button onclick="rejectCVE(this)">Reject</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CVE-2024-7800</td>
+                    <td>Buffer overflow vulnerability in WebRTC of Firefox versions.</td>
+                    <td><a href="https://thehackernews.com/">Link</a></td>
+                    <td>6.7/10</td>
+                    <td>
+                        <button onclick="approve('CVE-2024-7800', 'Firefox WebRTC Buffer Overflow', '6.7/10')">Approve</button>
+                        <button onclick="rejectCVE(this)">Reject</button>
+                        
+                    </td>
+                    <h4>
+            <!-- Rejected List Section -->
+            <div id="rejected-list-container">
+                <table border="1" id="rejected-list-table">
+                    <thead>
+                        <h3> Rejected CVEs</h3>      
+
+                        <tr>
+                            <th>CVE </th>
+                            <th>Description</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rejected CVEs will be added here -->
+                    </tbody>
+                </table>
+            </div>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Email Preview -->
+<!-- Approval Modal -->
+<div id="approval-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Email Preview</h2>
+
+        <!-- Email preview content based on template -->
+        <div id="modal-email-preview"></div>
+        <input type="hidden" id="modal-cve-number">
+
+        <!-- Recipient email input -->
+        <label for="recipient_email">Recipient Email:</label>
+        <input type="email" id="recipient_email" placeholder="Enter recipient email" required>
+
+        <!-- Template selection buttons -->
+        <button id="button1" onclick="selectTemplate(1)">Template 1</button>
+        <button id="button2" onclick="selectTemplate(2)">Template 2</button>
+        <button id="button3" onclick="selectTemplate(3)">Template 3</button>
+
+        <h3>Select Group</h3>
+<label><input type="radio" name="group" value="Group A"> Group A</label>
+<label><input type="radio" name="group" value="Group B"> Group B</label>
+<label><input type="radio" name="group" value="Group C"> Group C</label>
+
+<h3>Email Template</h3>
+<textarea id="template" placeholder="Enter your email template"></textarea>
+
+<button onclick="sendEmailToGroup()">Send Email</button>
+
+
+        <!-- Sent Email button -->
+        <button onclick="sendSentEmail()">Send Email</button>
+        <button onclick="groupSet()">Group Set</button>
+        
+        <!-- Container for storing selected template -->
+        <div id="template-container"></div>
+    </div>
+</div>
+
+<!-- Modal for Rejection Confirmation -->
+<div id="reject-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeRejectModal()">&times;</span>
+        <p>Are you sure you want to reject this item?</p>
+        <button onclick="confirmReject()">Confirm</button>
+        <button onclick="closeRejectModal()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    function approve(cve_number, description, severity) {
+        const emailContent = `
+            <!-- Email Content -->
+            <!-- Add your content here -->
+        `;
+        
+       document.getElementById('modal-email-preview').innerHTML = emailContent;
+        document.getElementById('modal-cve-number').value = cve_number;
+        document.getElementById('approval-modal').style.display = 'block';
+    }
+
+    // Function to select a template and display it in the preview section
+function selectTemplate(templateNumber) {
+const cveNumber = document.getElementById('modal-cve-number').value;
+let emailContent = '';
+
+// Load different content based on selected template number
+if (templateNumber === 1) {
+    emailContent = `
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE ALERTS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+        }
+
+        .emailBorder {
+            width: 800px;
+            background-color: #ffffff;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #main {
+            padding: 25px;
+            background-color: #d6ff6614;
+        }
+
+        #cveImg {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #220371;
+            text-align: center;
+        }
+
+        .cve-title {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 1.5rem;
+        }
+
+        .cve-description {
+            margin-top: 10px;
+            padding: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .reject-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .reject-button:hover {
+            background-color: #ff0000;
+        }
+
+        .bottombar {
+            width: 100%;
+            background-color: #0d012b;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .bottombar a {
+            color: white;
+            margin: 0 15px;
+        }
+
+        #copyright {
+            background-color: #ffffff;
+            color: #000000;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="emailBorder">
+        <div id="main">
+            <div id="cveImg">
+                <a href="https://necurity.com/">
+                    <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1722044636/logo_sfukpe.png" alt="cve" width="250px" height="125px">
+                </a>
+            </div>
+            <h1>NEW CVE UPDATES</h1>
+
+            <div id="emailBody">
+                <!-- CVE Entry 1 -->
+                <h2 class="cve-title">Octopus Server Improper Access Control</h2>
+                <div class="cve-description">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CVE NUMBER</th>
+                                <th>SEVERITY</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CVE-2024-4811</td>
+                                <td>2.2/10</td>
+                                <td>
+                                    <form action="/reject_cve" method="POST">
+                                        <input type="hidden" name="cve" value="CVE-2024-4811">
+                                        <button type="submit" class="reject-button">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>In affected versions of Octopus Server, under certain conditions, a user with specific role assignments can access restricted project artifacts.</p>
+                    <p><strong>Published Date:</strong> Thu, 25 Jul 2024 05:15:26 +0000</p>
+                </div>
+
+                <!-- CVE Entry 2 -->
+                <h2 class="cve-title">GitLab CE/EE Artifact Information Disclosure</h2>
+                <div class="cve-description">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CVE NUMBER</th>
+                                <th>SEVERITY</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CVE-2024-7057</td>
+                                <td>4.3/10</td>
+                                <td>
+                                    <form action="/reject_cve" method="POST">
+                                        <input type="hidden" name="cve" value="CVE-2024-7057">
+                                        <button type="submit" class="reject-button">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>An information disclosure vulnerability in GitLab CE/EE affects all versions starting from 16.7 prior to 17.0.5, starting from 17.1 prior to 17.1.3, and starting from 17.2 prior to 17.2.1 where job artifacts can be inappropriately exposed to users lacking the proper authorization level.</p>
+                    <p><strong>Published Date:</strong> Thu, 25 Jul 2024 01:15:10 +0000</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottombar">
+            <a href="http://necurity.com" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713760/web_topw8s.png" alt="web" width="25px" height="25px">
+            </a>
+            <a href="tel:+91-8610 14 0034">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/call_lnfado.png" alt="phone" width="25px" height="25px">
+            </a>
+            <a href="mailto:hr@necurity.com">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/email_fw6iet.png" alt="mail" width="25px" height="25px">
+            </a>
+            <a href="https://in.linkedin.com/company/necuritysoln" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721714745/linkedin_uykiul.png" alt="linkedin" width="25px" height="25px">
+            </a>
+            <a href="https://www.instagram.com/necuritysoln/" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721715815/instagram_yevn6t.png" alt="instagram" width="25px" height="25px">
+            </a>
+        </div>
+        <div id="copyright">
+            Copyright @2024 Necurity | All Rights Reserved
+        </div>
+        </div>
+        </body>
+        </html>
+    `;
+} else if (templateNumber === 2) {
+    emailContent = `
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE ALERTS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7; /* Light background for better contrast */
+        }
+
+        .emailBorder {
+            width: 800px;
+            background-color: #ffffff; /* White background for the email body */
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+        }
+
+        #main {
+            padding: 30px;
+            background-color: #f0f8ff; /* Light blue background */
+        }
+
+        #cveImg {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0056b3; /* Dark blue */
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .cve-title {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #003366; /* Darker shade of blue */
+        }
+
+        .cve-description {
+            margin-top: 10px;
+            padding: 5px;
+            color: #333; /* Dark gray for text */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0; /* Spacing between elements */
+        }
+
+        th, td {
+            text-align: center;
+            padding: 12px;
+            border: 1px solid #ccc; /* Light border for better appearance */
+        }
+
+        th {
+            background-color: #e9f7fa; /* Light blue background for headers */
+        }
+
+        .bottombar {
+            width: 100%;
+            background-color: #004d40; /* Dark teal */
+            color: white;
+            text-align: center;
+            padding: 15px 0; /* Added vertical padding */
+        }
+
+        .bottombar a {
+            color: white;
+            margin: 0 15px; /* Spacing between icons */
+        }
+
+        #copyright {
+            background-color: #ffffff;
+            color: #000000;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="emailBorder">
+        <!-- Second Design -->
+        <div id="main">
+            <div id="cveImg">
+                <a href="https://necurity.com/">
+                    <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1722044636/logo_sfukpe.png" alt="cve" width="250px" height="125px">
+                </a>
+            </div>
+            <h1>NEW CVE ALERTS</h1>
+
+            <div id="emailBody">
+                <h2 class="cve-title">Critical Vulnerability in Web Application</h2>
+                <div class="cve-description">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CVE NUMBER</th>
+                                <th>SEVERITY</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CVE-2024-1234</td>
+                                <td>9.8/10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>This vulnerability allows remote attackers to execute arbitrary code via a crafted request, leading to potential data breaches and system control.</p>
+                    <p><strong>Published Date:</strong> Fri, 26 Jul 2024 02:30:00 +0000</p>
+                </div>
+
+                <h2 class="cve-title">High Risk in Mobile Application</h2>
+                <div class="cve-description">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CVE NUMBER</th>
+                                <th>SEVERITY</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CVE-2024-5678</td>
+                                <td>7.5/10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>A vulnerability in the mobile application allows attackers to bypass authentication, potentially exposing sensitive user information.</p>
+                    <p><strong>Published Date:</strong> Fri, 26 Jul 2024 10:00:00 +0000</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottombar">
+            <a href="http://necurity.com" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713760/web_topw8s.png" alt="web" width="25px" height="25px">
+            </a>
+            <a href="tel:+91-8610 14 0034">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/call_lnfado.png" alt="phone" width="25px" height="25px">
+            </a>
+            <a href="mailto:hr@necurity.com">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/email_fw6iet.png" alt="mail" width="25px" height="25px">
+            </a>
+            <a href="https://in.linkedin.com/company/necuritysoln" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721714745/linkedin_uykiul.png" alt="linkedin" width="25px" height="25px">
+            </a>
+            <a href="https://www.instagram.com/necuritysoln/" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721715815/instagram_yevn6t.png" alt="instagram" width="25px" height="25px">
+            </a>
+        </div>
+
+        <div id="copyright">
+            Copyright @2024 Necurity | All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>
+    `
+} else if (templateNumber === 3) {
+    emailContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE ALERTS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .emailContainer {
+            max-width: 800px;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #004c8c;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header img {
+            width: 180px;
+            height: auto;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 20px 30px;
+            background-color: #f9f9f9;
+        }
+
+        .content h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .cve-section {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+
+        .cve-section h3 {
+            font-size: 1.2rem;
+            color: #004c8c;
+            margin: 0;
+        }
+
+        .cve-section p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .cve-section table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .cve-section th, .cve-section td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .cve-section th {
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .footer a {
+            color: #ffffff;
+            margin: 0 10px;
+        }
+
+        .footer img {
+            width: 25px;
+            height: 25px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="emailContainer">
+        <!-- Header -->
+        <div class="header">
+            <a href="https://necurity.com/">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1722044636/logo_sfukpe.png" alt="Necurity Logo">
+            </a>
+            <h1>Critical Vulnerability Alerts</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Latest CVE Updates</h2>
+
+            <!-- CVE Section 1 -->
+            <div class="cve-section">
+                <h3>CVE-2024-1234: Severe Vulnerability in Web Application</h3>
+                <p>This vulnerability allows unauthorized users to execute code remotely, potentially compromising sensitive information.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CVE Number</th>
+                            <th>Severity</th>
+                            <th>Published Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CVE-2024-1234</td>
+                            <td>9.8/10</td>
+                            <td>Fri, 26 Jul 2024 02:30:00 +0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CVE Section 2 -->
+            <div class="cve-section">
+                <h3>CVE-2024-5678: High-Risk Vulnerability in Mobile Application</h3>
+                <p>Allows attackers to bypass authentication, exposing sensitive user data.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CVE Number</th>
+                            <th>Severity</th>
+                            <th>Published Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CVE-2024-5678</td>
+                            <td>7.5/10</td>
+                            <td>Fri, 26 Jul 2024 10:00:00 +0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Contact Us</p>
+            <a href="http://necurity.com" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713760/web_topw8s.png" alt="Website">
+            </a>
+            <a href="tel:+91-8610 14 0034">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/call_lnfado.png" alt="Phone">
+            </a>
+            <a href="mailto:hr@necurity.com">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/email_fw6iet.png" alt="Email">
+            </a>
+            <a href="https://in.linkedin.com/company/necuritysoln" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721714745/linkedin_uykiul.png" alt="LinkedIn">
+            </a>
+            <a href="https://www.instagram.com/necuritysoln/" target="_blank">
+                <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721715815/instagram_yevn6t.png" alt="Instagram">
+            </a>
+            <p>&copy; 2024 Necurity | All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+}
+
+// Display the selected template content in the preview
+
+
+if (recipientEmail && emailContent) {
+    fetch('/send_email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            recipient_email: recipientEmail,
+            email_content: emailContent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Email sent successfully!');
+        } else {
+            alert('Failed to send email.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the email.');
+    });
+} else {
+    alert("Please select a template and enter a recipient email.");
+}
+}
+
+function loadTemplate1() {
+    fetch("/static/template1.html")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();
+        })
+        .then(data => {
+            // Assuming you have a container with the id 'templateContainer'
+            document.getElementById('templateContainer').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function reject(cve_number) {
+    // Send a request to reject the CVE
+    fetch(`/reject_cve`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            cve_number: cve_number
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('CVE ' + cve_number + ' has been rejected.');
+            // Optionally, remove the row from the table or reload the page to reflect the change
+            location.reload();
+        } else {
+            alert('Failed to reject CVE.');
+        }
+    });
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('approval-modal');
+    if (event.target == modal) {
+        closeModal();
+    }
+};
+
+</script>
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejected List</title>
+    <style>
+        /* General Body and Container Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            height: 100vh;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #575757;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #5bc0de;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #31b0d5;
+        }
+
+        #rejected-list-container {
+            margin-top: 20px;
+        }
+
+        #rejected-list-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #rejected-list-table th, #rejected-list-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #rejected-list-table th {
+            background-color: #333;
+            color: white;
+        }
+
+        #rejected-list-table td {
+            background-color: #f9f9f9;
+        }
+
+        #rejected-list-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Hiding the Rejected List Table Initially */
+        #rejected-list-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Dashboard</h1>
+
+        <!-- CVE List -->
+        <div id="cve-list">
+            <h3>List of CVEs</h3>
+            <table id="cve-list-table">
+                <thead>
+                    <tr>
+                        <th>CVE</th>
+                        <th>Description</th>
+                        <th>Severity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CVE-2024-12345</td>
+                        <td>Example description 1</td>
+                        <td>High</td>
+                        <td><button class="reject-btn" data-cve="CVE-2024-12345" data-description="Example description 1" data-severity="High">Reject</button></td>
+                    </tr>
+                    <tr>
+                        <td>CVE-2024-12346</td>
+                        <td>Example description 2</td>
+                        <td>Medium</td>
+                        <td><button class="reject-btn" data-cve="CVE-2024-12346" data-description="Example description 2" data-severity="Medium">Reject</button></td>
+                    </tr>
+                    <!-- More CVEs can be listed here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Button to Show Rejected List -->
+        <button id="show-rejected-list-btn">Show Rejected List</button>
+
+        <!-- Rejected List Section -->
+        <div id="rejected-list-container">
+            <h3>Rejected List</h3>
+            <table id="rejected-list-table">
+                <thead>
+                    <tr>
+                        <th>CVE</th>
+                        <th>Description</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rejected CVEs will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JavaScript for Button Functionality -->
+    <script>
+        // Toggle the visibility of the rejected list
+        document.getElementById("show-rejected-list-btn").addEventListener("click", function() {
+            var container = document.getElementById("rejected-list-container");
+            container.style.display = container.style.display === "none" ? "block" : "none";
+        });
+
+        // Handle Reject action and add to the rejected list
+        document.querySelectorAll(".reject-btn").forEach(function(button) {
+            button.addEventListener("click", function() {
+                var cve = this.getAttribute("data-cve");
+                var description = this.getAttribute("data-description");
+                var severity = this.getAttribute("data-severity");
+
+                // Add rejected CVE to the rejected list
+                var tableBody = document.querySelector("#rejected-list-table tbody");
+                var row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${cve}</td>
+                    <td>${description}</td>
+                    <td>${severity}</td>
+                `;
+
+                tableBody.appendChild(row);
+
+                // Optionally hide the Reject button once clicked (optional)
+                this.disabled = true;
+                this.textContent = "Rejected";
+            });
+        });
+    </script>
+</body>
+</html>

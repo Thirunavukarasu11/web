@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template Designs</title>
+    
+    <!-- Bootstrap CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .emailBorder {
+            width: 800px;
+            border: 1px solid black;
+            background-color: #ffffff; /* White background for the email content */
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #main {
+            padding: 25px;
+            background-color: #ffffff; /* White background for the main section */
+        }
+        #cveImg {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #220371;
+            margin-left: 10px;
+            text-align: center;
+        }
+        .cve-title {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .cve-description {
+            margin-top: 10px;
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .bottombar {
+            width: 100%;
+            background-color: #0d012b;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+        .bottombar a {
+            color: white;
+            margin: 0 15px;
+        }
+        #copyright {
+            background-color: #ffffff; /* Keep this white */
+            color: #000000;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-white text-center">Email Templates</h4>
+        <a href="#" onclick="showTemplate('template1')">Template 1</a>
+        <a href="#" onclick="showTemplate('template2')">Template 2</a>
+        <a href="#" onclick="showTemplate('template3')">Template 3</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container">
+            
+            <!-- Email Template Section -->
+            <div class="emailBorder" id="emailTemplate" style="display:none;">
+                <div id="main">
+                    <div id="cveImg">
+                        <a href="https://necurity.com/">
+                            <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1722044636/logo_sfukpe.png" alt="cve" width="250px" height="125px">
+                        </a>
+                    </div>
+                    <h1>NEW CVE UPDATES</h1>
+
+                    <div id="emailBody"></div>
+                </div>
+
+                <div class="bottombar">
+                    <a href="http://necurity.com" target="_blank">
+                        <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713760/web_topw8s.png" alt="web" width="25px" height="25px">
+                    </a>
+                    <a href="tel:+91-8610 14 0034">
+                        <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/call_lnfado.png" alt="phone" width="25px" height="25px">
+                    </a>
+                    <a href="mailto:hr@necurity.com">
+                        <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721713029/email_fw6iet.png" alt="mail" width="25px" height="25px">
+                    </a>
+                    <a href="https://in.linkedin.com/company/necuritysoln" target="_blank">
+                        <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721714745/linkedin_uykiul.png" alt="linkedin" width="25px" height="25px">
+                    </a>
+                    <a href="https://www.instagram.com/necuritysoln/" target="_blank">
+                        <img src="https://res.cloudinary.com/dcf5dubf9/image/upload/v1721715815/instagram_yevn6t.png" alt="instagram" width="25px" height="25px">
+                    </a>
+                </div>
+
+                <div id="copyright">
+                    Copyright @2024 Necurity | All Rights Reserved
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+        <script>
+            function showTemplate(template) {
+                const emailBody = document.getElementById("emailBody");
+                const emailTemplate = document.getElementById("emailTemplate");
+                emailTemplate.style.display = 'block'; // Show the email template
+                
+                if (template === 'template1') {
+                    emailBody.innerHTML = `
+                        <h2 class="cve-title">Octopus Server Improper Access Control</h2>
+                        <div class="cve-description">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CVE NUMBER</th>
+                                        <th>SEVERITY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CVE-2024-4811</td>
+                                        <td>7.8/10</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>An improper access control issue exists in Octopus Server. This vulnerability may allow an attacker to access sensitive information.</p>
+                            <p><strong>Published Date:</strong> Thu, 25 Jul 2024 05:15:26 +0000</p>
+                        </div>
+                    `;
+                } 
+                else if (template === 'template2') {
+                    emailBody.innerHTML = `
+                        <h2 class="cve-title">Apache Commons File Upload Denial of Service</h2>
+                        <div class="cve-description">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CVE NUMBER</th>
+                                        <th>SEVERITY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CVE-2024-4536</td>
+                                        <td>8.5/10</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>A denial of service issue exists in Apache Commons File Upload. An attacker may exploit this vulnerability to crash the server.</p>
+                        </div>
+                    `;
+                } 
+                else if (template === 'template3') {
+                    emailBody.innerHTML = `
+                        <h2 class="cve-title">MySQL Server Security Flaw</h2>
+                        <div class="cve-description">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CVE NUMBER</th>
+                                        <th>SEVERITY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CVE-2024-5305</td>
+                                        <td>9.0/10</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>A security flaw in MySQL Server could allow an attacker to compromise the database.</p>
+                        </div>
+                    `;
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

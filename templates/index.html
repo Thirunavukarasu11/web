@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sender</title>
+</head>
+<body>
+    <h1>Send Email Notification</h1>
+    <form action="/send_email" method="POST">
+        <label for="cve_number">CVE Number:</label>
+        <input type="text" id="cve_number" name="cve_number" required><br><br>
+
+        <label for="template_choice">Choose Template:</label>
+        <select id="template_choice" name="template_choice" required>
+            <option value="1">Template 1</option>
+            <option value="2">Template 2</option>
+            <option value="3">Template 3</option>
+        </select><br><br>
+
+        <label for="group_choice">Choose Group:</label>
+        <select id="group_choice" name="group_choice" required>
+            <option value="a">Group A</option>
+            <option value="b">Group B</option>
+            <option value="c">Group C</option>
+        </select><br><br>
+
+        <button type="submit">Send Email</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dataset</title>
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #01031a;
+        }
+
+        /* Group Button Styles */
+        .group-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .group-btn {
+            padding: 10px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+
+        .group-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .action-buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background-color: #218838;
+        }
+
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Table Styling */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+
+        tbody tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Email Dataset</h1>
+    
+    <div class="group-container">
+        <button class="group-btn" onclick="showGroup('A')">Group A</button>
+        <button class="group-btn" onclick="showGroup('B')">Group B</button>
+        <button class="group-btn" onclick="showGroup('C')">Group C</button>
+    </div>
+
+    <div class="action-buttons">
+        <button class="add-btn" onclick="addUser()">Add User</button>
+        <button class="remove-btn" onclick="removeUser()">Remove User</button>
+    </div>
+    
+    <table id="emailTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="emailTableBody">
+        </tbody>
+    </table>
+
+    <script>
+        // Predefined email data for each group
+        const emailGroups = {
+            A: [
+                { id: 1, name: "Thirunavukarasu", email: "thirunavukarasu110902@gmail.com" },
+                { id: 2, name: "Sharath", email: "sharathsharpkss@gmail.com" },
+                { id: 3, name: "Emily Davis", email: "emily.davis@domain.net" },
+                { id: 4, name: "David Lee", email: "david.lee123@gmail.com" },
+                { id: 5, name: "Sarah Brown", email: "sarah.brown@business.com" }
+            ],
+            B: [
+                { id: 6, name: "Michael Johnson", email: "michael.johnson@company.org" },
+                { id: 7, name: "Emily Davis", email: "emily.davis@domain.net" },
+                { id: 8, name: "Balaganesh", email: "balaganesh068@gmail.com" },
+                { id: 9, name: "John Doe", email: "john.doe@example.com" },
+                { id: 10, name: "Jane Smith", email: "jane.smith@email.com" },
+            ],
+            C: [
+                { id: 11, name: "Alice Walker", email: "alice.walker@example.com" },
+                { id: 12, name: "Bob Martin", email: "bob.martin@domain.org" },
+                { id: 13, name: "Carol King", email: "carol.king@company.net" },
+                { id: 14, name: "Dan Turner", email: "dan.turner@email.com" },
+                { id: 15, name: "Eve White", email: "eve.white@service.co.uk" }
+            ]
+        };
+
+        let currentGroup = 'A'; // Default selected group
+        let currentId = 15; // Last used ID
+
+        // Function to show the selected group
+        function showGroup(group) {
+            currentGroup = group; // Set the current group
+            const table = document.getElementById('emailTable');
+            const tableBody = document.getElementById('emailTableBody');
+
+            // Clear the table body
+            tableBody.innerHTML = '';
+
+            // Populate the table with the selected group's data
+            emailGroups[group].forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Show the table
+            table.style.display = 'table';
+        }
+
+        // Function to add a user to the current group
+        function addUser() {
+            const name = prompt("Enter the user's name:");
+            const email = prompt("Enter the user's email:");
+            if (name && email) {
+                currentId++;
+                emailGroups[currentGroup].push({ id: currentId, name, email });
+                showGroup(currentGroup); // Refresh the table
+            } else {
+                alert("Name and email are required to add a user.");
+            }
+        }
+
+        // Function to remove the last user from the current group
+        function removeUser() {
+            if (emailGroups[currentGroup].length > 0) {
+                emailGroups[currentGroup].pop(); // Remove the last user
+                showGroup(currentGroup); // Refresh the table
+            } else {
+                alert("No users left to remove in this group.");
+            }
+        }
+    </script>
+</body>
+</html>

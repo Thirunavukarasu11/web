@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email to Multiple Groups</title>
+    <style>
+        /* Sidebar style */
+        .sidebar {
+            width: 200px;
+            position: fixed;
+            top: 0;
+            right: -200px;
+            background-color: #111;
+            color: white;
+            height: 100%;
+            transition: 0.3s;
+            padding: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+        .sidebar.open {
+            right: 0;
+        }
+        /* Body content padding */
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <button onclick="toggleSidebar()">Group Set</button>
+        <button onclick="sendEmail()" id="sendEmailBtn" style="display:none;">Send Email</button>
+    </div>
+
+    <!-- Sidebar with Group A, B, C -->
+    <div id="sidebar" class="sidebar">
+        <h3>Select Groups</h3>
+        <a href="javascript:void(0);" onclick="selectGroup('A')">Group A</a>
+        <a href="javascript:void(0);" onclick="selectGroup('B')">Group B</a>
+        <a href="javascript:void(0);" onclick="selectGroup('C')">Group C</a>
+    </div>
+
+    <script>
+        let selectedGroups = [];
+
+        // Toggles the sidebar visibility
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Function to handle group selection
+        function selectGroup(group) {
+            if (!selectedGroups.includes(group)) {
+                selectedGroups.push(group);
+            } else {
+                selectedGroups = selectedGroups.filter(g => g !== group);
+            }
+
+            alert(`Selected Groups: ${selectedGroups.join(', ')}`);
+
+            // Once a group is selected, hide the sidebar
+            toggleSidebar();
+
+            // Show the "Send Email" button if any group is selected
+            document.getElementById('sendEmailBtn').style.display = selectedGroups.length > 0 ? 'inline-block' : 'none';
+        }
+
+        // Function to send email to selected groups
+        function sendEmail() {
+            if (selectedGroups.length > 0) {
+                fetch('/send_email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ groups: selectedGroups })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Emails sent successfully!');
+                    } else {
+                        alert('Failed to send emails.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred.');
+                });
+            } else {
+                alert('Please select at least one group first.');
+            }
+        }
+    </script>
+
+</body>
+</html>

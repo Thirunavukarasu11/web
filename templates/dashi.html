@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Email Template</title>
+</head>
+<body>
+    <li><a href="{{ url_for('approval_list') }}">Approval List</a></li>
+
+    <h1>Select an Email Template</h1>
+    <form action="/send-email" method="POST">
+        <label for="template">Choose a template:</label>
+        <select name="template" id="template">
+            <option value="template1.html">Template 1</option>
+            <option value="template2.html">Template 2</option>
+            <option value="template3.html">Template 3</option>
+            <!-- Add more options as needed -->
+        </select>
+        <button type="submit">Send Email</button>
+    </form>
+</body>
+</html>
